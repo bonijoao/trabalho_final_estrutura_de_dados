@@ -15,45 +15,35 @@ format:
         code-tools-position: right
         echo: false
         embed-resources: true
+        theme: cosmo
+        navbar:
+          right:
+            - icon: github
+              href: https://github.com/bonijoao/trabalho_final_estrutura_de_dados
+              text: "GitHub"
 ---
 
 
 ## Introdução
 
-Estruturas de dados são componentes fundamentais da Ciência da Computação, responsáveis por organizar, armazenar e manipular informações de forma eficiente. Elas permitem que algoritmos operem de maneira mais rápida e estruturada, influenciando diretamente o desempenho de aplicações práticas. Entre as estruturas de dados mais elementares e versáteis estão as **pilhas** e **filas**, que, embora simples em sua concepção, possuem ampla aplicação em problemas do mundo real.
+Estruturas de dados são componentes fundamentais da Ciência da Computação, influenciando diretamente o desempenho de aplicações práticas. Entre as mais versáteis estão as **pilhas** e **filas**, que seguem os princípios **LIFO** (*Last In, First Out*) e **FIFO** (*First In, First Out*), respectivamente. Embora simples em sua concepção, essas estruturas possuem ampla aplicação em problemas do mundo real.
 
-A **pilha (stack)** segue o princípio **LIFO** (*Last In, First Out*), em que o último elemento inserido é o primeiro a ser removido. Essa estrutura é especialmente útil em situações como verificação de expressões matemáticas, controle de chamadas de funções recursivas e identificação de padrões ou extremos locais em séries temporais. Por outro lado, a **fila (queue)** opera segundo o princípio **FIFO** (*First In, First Out*), onde os elementos são processados na mesma ordem em que foram inseridos, sendo ideal para cenários como gerenciamento de tarefas, filas de impressão ou sistemas de monitoramento contínuo.
+No contexto de **Online Machine Learning (OML)**, onde dados são processados sequencialmente à medida que chegam, essas estruturas se tornam essenciais. **Filas** permitem a construção de **janelas deslizantes (sliding windows)** — subconjuntos móveis de dados que priorizam registros mais recentes, descartando os mais antigos. Esse mecanismo é crucial para a detecção de **concept drifts**, mudanças nas distribuições dos dados ao longo do tempo.
 
-Ambas as estruturas podem ser implementadas em diferentes formas, com destaque para as **estruturas sequenciais**, como vetores e listas. No caso das filas, é comum utilizar dois índices para gerenciar de forma eficiente a entrada e saída dos elementos. Isso se torna particularmente útil em aplicações que lidam com dados em tempo real, como no controle de fluxo de dados financeiros, ambientais ou operacionais.
+**Pilhas**, por sua vez, são úteis para identificar **máximos e mínimos locais** em séries temporais. Esses pontos de inflexão podem sinalizar mudanças abruptas no comportamento do sistema, funcionando como indicadores precoces de possíveis drifts.
 
-Nesse cenário, destaca-se o paradigma de **Online Machine Learning (OML)**, em que os dados são processados **sequencialmente à medida que chegam**, sem que todo o conjunto histórico precise ser armazenado. Para viabilizar esse processamento incremental e eficiente, estruturas como **filas** são essenciais, pois permitem a construção de **janelas deslizantes (sliding windows)** — subconjuntos móveis de dados que priorizam os registros mais recentes. A cada novo dado inserido, o mais antigo é descartado, o que garante economia de memória e maior adaptabilidade do modelo a mudanças no padrão dos dados. Esse mecanismo é especialmente relevante na detecção de **concept drifts**, isto é, mudanças nas distribuições ou relações entre variáveis ao longo do tempo.
-
-Uma aplicação prática disso é o cálculo de **médias móveis**, amplamente usado para suavizar séries temporais e acompanhar tendências recentes. Neste trabalho, propomos um projeto que utiliza uma **base de dados de preços de Bitcoin em USD**, composta por 2880 registros, um por minuto ao longo de dois dias. Essa base é gerida por uma **fila de tamanho fixo**, implementando uma janela deslizante que garante que apenas os dados mais recentes sejam mantidos, simulando o comportamento típico de algoritmos de aprendizado online.
-
-Complementando essa abordagem, utilizamos também **pilhas** para a identificação de **máximos e mínimos locais** nos dados. Esses picos e vales, que representam pontos de inflexão, são importantes indicadores de possíveis mudanças abruptas no comportamento do sistema — podendo sinalizar **drifts** relevantes. A estrutura LIFO da pilha permite inspecionar e retroceder rapidamente a eventos recentes, o que favorece a análise de padrões temporais e a detecção de anomalias em fluxos contínuos de dados.
-
-Ao longo do trabalho, discutimos os fundamentos teóricos dessas estruturas, suas implementações e os benefícios do uso combinado de filas e pilhas em contextos de **aprendizado de máquina online**. Dessa forma, buscamos consolidar os conhecimentos adquiridos na disciplina de Estrutura de Dados, aplicando-os em um cenário prático e atual, que envolve o tratamento eficiente de séries temporais e a adaptação dinâmica a mudanças em tempo real.
+Este trabalho demonstra a aplicação prática dessas estruturas em análise de séries temporais financeiras, utilizando uma base de dados de preços de Bitcoin com 2880 registros. Implementamos dois algoritmos: um para cálculo de médias móveis com janelas deslizantes usando filas, e outro para detecção de valores críticos com pilhas. Ambos foram desenvolvidos como aplicativos Shiny interativos, consolidando conhecimentos da disciplina de Estrutura de Dados em um cenário atual e prático.
 
 
-# Filas, Pilhas e Detecção de Mudanças
+# Fundamentação Teórica
 
-No contexto de sistemas de aprendizado de máquina online (*Online Machine Learning* – OML), o tratamento eficiente de dados que chegam em fluxo contínuo é um dos maiores desafios. Nesses cenários, o armazenamento completo do histórico de dados geralmente não é viável, exigindo métodos que priorizem as informações mais recentes e se adaptem a mudanças ao longo do tempo. É nesse contexto que o uso de **estruturas de dados clássicas, como filas e pilhas**, revela-se não apenas útil, mas essencial.
+### Janelas Deslizantes com Filas
 
-### Filas e Janelas Deslizantes: Foco no Presente
+As **janelas deslizantes** implementadas com filas oferecem uma solução eficiente para processamento de dados em tempo real. Mantendo apenas os últimos `w` elementos do fluxo, essas estruturas garantem economia de memória e processamento eficiente. A cada inserção, o elemento mais antigo é automaticamente descartado, mantendo a janela atualizada e permitindo o cálculo contínuo de estatísticas como médias móveis.
 
-Uma das abordagens mais comuns para lidar com dados em tempo real é o uso de **janelas deslizantes (*sliding windows*)**, que armazenam apenas os últimos `w` elementos do fluxo de dados. A cada novo dado recebido, o elemento mais antigo é descartado, mantendo a janela sempre atualizada. Esse comportamento se alinha perfeitamente com a lógica da **fila**, uma estrutura de dados do tipo **FIFO** (*First In, First Out*), em que o primeiro elemento a entrar é o primeiro a sair.
+### Detecção de Extremos com Pilhas
 
-Ao implementar janelas deslizantes com filas, conseguimos criar sistemas que economizam memória, armazenando apenas os dados mais recentes, processam os dados em tempo real com inserções e remoções eficientes, permitem o cálculo contínuo de estatísticas, como médias móveis, e adaptam-se a mudanças no padrão dos dados, ou seja, a concept drifts.
-
-As **médias móveis**, por exemplo, são calculadas dentro dessa janela deslizante, refletindo o comportamento recente do sistema. Isso é particularmente útil para modelos que precisam acompanhar tendências ou padrões que mudam ao longo do tempo, como preços de ativos financeiros, sinais de sensores ou séries temporais ambientais.
-
-### Pilhas e a Identificação de Picos: Sensibilidade às Mudanças
-
-Enquanto as filas oferecem uma visão geral contínua dos dados mais recentes, **pilhas** podem ser exploradas para identificar **picos locais (máximos e mínimos)** em séries temporais. Esses picos são pontos de inflexão nos dados e podem sinalizar **mudanças abruptas no comportamento da variável**, funcionando como indicadores iniciais de um **concept drift**.
-
-A detecção de máximos e mínimos locais é importante, por exemplo, quando o sistema apresenta mudanças repentinas de tendência, aumentos ou quedas abruptas no valor observado e sinais de que o modelo atual está desatualizado ou mal ajustado.
-
-Ao empilhar e inspecionar valores recentes, é possível criar algoritmos que monitoram o surgimento desses picos e vales, alertando para possíveis **drifts** — mudanças nas distribuições de dados ou na relação entre variáveis ao longo do tempo.
+**Pilhas** são ideais para identificar máximos e mínimos locais em séries temporais. Utilizando o princípio LIFO, é possível detectar pontos de inflexão que sinalizam mudanças abruptas no comportamento dos dados. Esses extremos funcionam como indicadores precoces de **concept drifts**, permitindo adaptação rápida a mudanças no padrão dos dados.
 
 # Material e Métodos
 
@@ -61,41 +51,103 @@ Ao empilhar e inspecionar valores recentes, é possível criar algoritmos que mo
 
 Neste trabalho, desenvolvemos dois algoritmos principais que exemplificam o uso prático de filas e pilhas em contextos de Online Machine Learning. Ambos os algoritmos foram projetados para processar sequencialmente os dados de preços de Bitcoin, simulando um ambiente de análise em tempo real onde novos dados chegam continuamente e devem ser processados de forma eficiente.
 
+### A Base de Dados
+
+Para validar e demonstrar a eficácia dos algoritmos implementados, utilizamos uma base de dados real de **preços de Bitcoin em dólares americanos (BTC/USD)**. A base de dados é composta por 2880 registros, um por minuto ao longo de dois dias. Os valores são atualizados de forma que a cada minuto, um novo valor é inserido na base de dados e o mais antigo é removido. Uma estrutura de dados que atenda a essas necessidades é a fila de tamanho fixo, que permite a inserção e remoção de elementos de forma eficiente, garantindo que a base de dados sempre contenha apenas os últimos 2880 valores. No gráfico abaixo, podemos visualizar a série temporal dos preços do Bitcoin ao longo dos dois dias.	
+
+```{python}
+import pandas as pd
+df = pd.read_csv('dados/db_bitcoin_1dia.csv')
+
+# Gráfico interativo
+import plotly.express as px
+
+# Filtrar apenas a coluna de preços do BTC
+df_btc = df[['Date', 'Close']]
+
+# Criar gráfico interativo com tema mínimo e sem fundo
+fig = px.line(df_btc, x='Date', y='Close', title='Preço do Bitcoin', template='plotly_white')
+
+# Mostrar gráfico
+fig.show()
+```
+
+
+## Implementação
+
+Os algoritmos foram implementados em Python utilizando as bibliotecas `pandas`, `plotly` e `scipy`. Ambos foram desenvolvidos como aplicativos Shiny interativos para facilitar a visualização e análise dos resultados.
+
 ### Algoritmo de Médias Móveis com Janelas Deslizantes
 
-O primeiro algoritmo implementa o cálculo de **médias móveis** utilizando uma **fila** como estrutura de dados principal para gerenciar a janela deslizante. O funcionamento deste algoritmo baseia-se no princípio fundamental das filas (FIFO - *First In, First Out*), onde o primeiro elemento inserido é sempre o primeiro a ser removido.
+O primeiro aplicativo permite explorar médias móveis com janelas deslizantes em tempo real. O usuário pode ajustar o tamanho da janela (2-50 períodos) através de um controle deslizante e escolher qual variável analisar (fechamento, abertura, máxima, mínima ou volume). 
 
-O algoritmo opera da seguinte forma: inicialmente, uma fila vazia é criada com um tamanho máximo predefinido, que corresponde ao tamanho da janela temporal desejada. À medida que novos valores de preço chegam sequencialmente, cada valor é inserido no final da fila através da operação de **enqueue**. Quando a fila atinge sua capacidade máxima e um novo elemento precisa ser inserido, o elemento mais antigo (que está no início da fila) é automaticamente removido através da operação de **dequeue**, mantendo o tamanho da janela constante.
+O aplicativo implementa uma fila que mantém apenas os últimos N valores conforme especificado, calculando continuamente a média móvel. O gráfico exibe simultaneamente a série original e sua média móvel, incluindo funcionalidade de zoom interativo para análise detalhada de períodos específicos.
 
-O cálculo da média móvel é realizado de forma incremental: a cada inserção ou remoção de elemento, a soma total dos valores na fila é atualizada, e a média é recalculada dividindo-se essa soma pelo número atual de elementos. Essa abordagem garante que a média sempre reflita apenas os dados mais recentes dentro da janela temporal, capturando tendências de curto prazo e suavizando flutuações pontuais nos preços.
-
-Uma das principais vantagens deste algoritmo é sua **eficiência computacional**. As operações de inserção e remoção em filas são realizadas em tempo constante O(1), e o cálculo da média pode ser otimizado para também operar em tempo constante, mantendo uma soma acumulada que é atualizada incrementalmente. Isso permite que o algoritmo processe milhares de pontos de dados em tempo real sem degradação significativa de performance.
-
-O algoritmo também permite a configuração de **múltiplas janelas temporais simultâneas**, possibilitando o cálculo de médias móveis de diferentes períodos (por exemplo, 15 minutos, 1 hora e 4 horas) de forma paralela. Cada janela é implementada como uma fila independente, permitindo comparações entre tendências de diferentes horizontes temporais.
+![Visualização do algoritmo de médias móveis](img/1.png)
 
 ### Algoritmo de Detecção de Valores Críticos com Pilhas
 
-O segundo algoritmo foca na identificação de **valores críticos** - especificamente máximos locais - utilizando uma **pilha** como estrutura de dados principal. Este algoritmo explora o princípio LIFO (*Last In, First Out*) das pilhas, onde o último elemento inserido é o primeiro a ser acessado ou removido.
+O segundo aplicativo identifica máximos e mínimos locais usando pilhas para armazenar os valores críticos. O usuário pode carregar dados próprios via upload CSV ou utilizar a base padrão de Bitcoin. Um controle de sensibilidade ajusta a proeminência dos picos, definindo quão significativo deve ser um ponto para ser considerado extremo local.
 
-O funcionamento do algoritmo de detecção baseia-se na análise de **janelas de vizinhança** ao redor de cada ponto da série temporal. Para cada novo valor que chega, o algoritmo examina uma janela centrada nesse ponto, comparando o valor central com seus vizinhos imediatos. Um ponto é considerado um **máximo local** quando seu valor é estritamente maior que os valores dos pontos adjacentes dentro da janela de análise.
+O algoritmo utiliza a biblioteca scipy para identificar pontos críticos, organizando-os em duas pilhas LIFO. O aplicativo apresenta três visualizações: gráfico principal com extremos marcados por triângulos coloridos, tabela da pilha de máximos e tabela da pilha de mínimos, ambas ordenadas cronologicamente do mais recente para o mais antigo. Informações estatísticas são exibidas na barra lateral, incluindo número de registros e extremos identificados.
 
-Quando um máximo local é identificado, ele é inserido na pilha através da operação de **push**. A característica fundamental deste algoritmo é que ele mantém na pilha apenas os máximos mais relevantes, implementando uma lógica de **filtragem automática**. Antes de inserir um novo máximo, o algoritmo verifica se existem máximos anteriores na pilha que são menores ou iguais ao novo valor. Se existirem, estes são removidos da pilha através de operações sucessivas de **pop**, garantindo que a pilha sempre mantenha uma sequência de máximos em ordem crescente de valor.
+![Visualização do algoritmo de detecção de valores críticos](img/2.png)
 
-Esta estratégia de filtragem é particularmente eficaz porque explora a natureza LIFO da pilha: os máximos mais recentes (no topo da pilha) são sempre os primeiros a serem comparados e potencialmente removidos. Isso cria um efeito de "cascata" onde a detecção de um novo máximo significativo pode resultar na remoção de vários máximos menores que haviam sido detectados anteriormente.
+::: {.callout-tip}
+## Aplicativos Shiny
 
-O algoritmo também implementa um mecanismo de **controle de sensibilidade** através do tamanho da janela de análise. Janelas menores resultam em maior sensibilidade, detectando máximos locais mais frequentes mas potencialmente menos significativos. Janelas maiores, por outro lado, identificam apenas os máximos mais proeminentes, filtrando flutuações menores e focando em pontos de inflexão realmente relevantes para a análise.
+Ambos aplicativos podem ser encontrados clicando [aqui](https://github.com/bonijoao/trabalho_final_estrutura_de_dados)
 
-Uma característica importante deste algoritmo é sua capacidade de **adaptação dinâmica** ao comportamento dos dados. Em períodos de alta volatilidade, mais máximos locais são detectados e empilhados, refletindo a instabilidade do mercado. Em períodos de estabilidade, poucos máximos são identificados, indicando comportamento mais previsível da série temporal.
+:::
 
-## Descrição da implementação
+# Análise de Desempenho
 
-Para validar e demonstrar a eficácia dos algoritmos implementados, utilizamos uma base de dados real de **preços de Bitcoin em dólares americanos (BTC/USD)**
+A análise assintótica dos algoritmos implementados revela limitações significativas em termos de eficiência computacional, especialmente para aplicações com grandes volumes de dados em tempo real.
 
+## Algoritmo de Médias Móveis
 
+O algoritmo de médias móveis apresenta **complexidade de tempo O(N × n)**, onde N representa o tamanho da série temporal e n o tamanho da janela deslizante. Para cada novo elemento processado, o algoritmo executa O(n) operações para calcular a média dos elementos na janela, além de O(1) para as operações de inserção e remoção na fila. Esta implementação torna-se **ineficiente para janelas grandes**, pois o tempo de processamento cresce linearmente com o tamanho da janela.
 
+Em termos de **complexidade de espaço**, o algoritmo é mais eficiente, utilizando apenas **O(n)** memória para armazenar os elementos da janela atual. Apesar da economia de memória, o algoritmo não é adequado para cenários de Online Machine Learning que exigem processamento em tempo real de grandes fluxos de dados.
 
+## Algoritmo de Detecção de Valores Críticos
 
+O algoritmo de detecção de extremos com pilhas apresenta **complexidade de tempo variável**. No melhor caso, com séries monotônicas, a complexidade é **O(N)**, pois cada elemento é processado apenas uma vez. Entretanto, no pior caso, com séries alternantes, a complexidade pode degradar para **O(N²)**, tornando o algoritmo impraticável para grandes volumes de dados.
 
+A **complexidade de espaço** também varia significativamente: **O(1)** no melhor caso para séries monotônicas, mas **O(N)** no pior caso quando todos os elementos são considerados extremos locais. Esta variabilidade torna o algoritmo inadequado para aplicações que requerem garantias de desempenho consistente.
 
+## Limitações Identificadas
 
+| Aspecto | Médias Móveis | Valores Críticos |
+|---------|---------------|-------------------|
+| **Melhor Caso** | O(N × n) | O(N) |
+| **Pior Caso** | O(N × n) | O(N²) |
+| **Memória** | O(n) | O(N) |
 
+Ambos os algoritmos apresentam **limitações significativas** para processamento de séries temporais extensas. O algoritmo de médias móveis sofre com o recálculo constante das médias, enquanto o algoritmo de detecção de extremos pode degradar drasticamente em cenários com alta variabilidade nos dados.
+
+# Considerações Finais
+
+Os algoritmos implementados demonstraram de forma prática as estruturas de dados clássicas no processamento de dados em tempo real, validando os conceitos estudados na disciplina de Estrutura de Dados. A implementação de filas e pilhas para análise de séries temporais evidenciou tanto o potencial quanto as limitações dessas estruturas em cenários reais.
+
+A análise de desempenho revelou limitações dos algoritmos implementados. **Propostas de melhoria incluem**: algoritmos de média móvel incremental para reduzir complexidade temporal; estruturas mais sofisticadas como árvores de segmento para consultas eficientes; técnicas de sampling para reduzir volume de dados; e otimização através de paralelização.
+
+A implementação em aplicativos Shiny demonstrou a viabilidade de criar ferramentas práticas para análise de dados em tempo real, reforçando a importância das estruturas de dados fundamentais na construção de sistemas de aprendizado de máquina online, ainda que com as limitações de desempenho identificadas.
+
+# Referências
+
+- Bartz, E., & Bartz-Beielstein, T. (2024). *Online Machine Learning: Methodologies and Applications*. Springer.
+
+- Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2009). *Introduction to Algorithms* (3rd ed.). MIT Press.
+
+- Gama, J., Žliobaitė, I., Bifet, A., Pechenizkiy, M., & Bouchachia, A. (2014). A survey on concept drift adaptation. *ACM Computing Surveys*, 46(4), 1-37.
+
+- Pandas Development Team. (2024). *pandas: powerful Python data analysis toolkit*. https://pandas.pydata.org/
+
+- Plotly Technologies Inc. (2024). *Plotly Python Open Source Graphing Library*. https://plotly.com/python/
+
+- Posit Team. (2024). *Shiny for Python*. https://shinylive.io/py/
+
+- SciPy Community. (2024). *SciPy: Scientific Computing Tools for Python*. https://scipy.org/
+
+- Virtanen, P., Gommers, R., Oliphant, T. E., et al. (2020). SciPy 1.0: fundamental algorithms for scientific computing in Python. *Nature Methods*, 17(3), 261-272.

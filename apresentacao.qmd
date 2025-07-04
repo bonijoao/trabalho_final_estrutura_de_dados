@@ -173,5 +173,4 @@ fig.show()
 * [Valores Críticos](https://en.wikipedia.org/wiki/Extreme_value_theory)    
 * [Shiny](https://shinylive.io/py/)
 * [Online Machine Learning](https://www.amazon.com/Online-Machine-Learning-Methodologies-Applications/dp/9819970067) por Eva Bartz e Thomas Bartz-Beielstein
-
-
+* [git](https://github.com/bonijoao/trabalho_final_estrutura_de_dados)
