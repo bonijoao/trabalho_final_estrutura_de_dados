@@ -1,6 +1,7 @@
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Shiny](https://img.shields.io/badge/Shiny-Python-orange.svg)
 ![Data Structures](https://img.shields.io/badge/Data%20Structures-Queues-green.svg)
+![Data Structures](https://img.shields.io/badge/Data%20Structures-Stacks-green.svg)
 
 # Projeto Final de Estrutura de Dados: Análise de Bitcoin com Pilhas e Filas
 
@@ -206,5 +207,4 @@ python scrips_python/2_atualizar_dados_continuamente.py
 **Disciplina:** Estrutura de Dados (GES-115)  
 **Instituição:** Universidade Federal de Lavras (UFLA)  
 **Período:** 3º Período  
-**Peso:** 40 pontos (projeto) + 10 pontos (apresentação)
 
