@@ -1,4 +1,9 @@
+![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
+![Shiny](https://img.shields.io/badge/Shiny-Python-orange.svg)
+![Data Structures](https://img.shields.io/badge/Data%20Structures-Queues-green.svg)
+
 # Projeto Final de Estrutura de Dados: Análise de Bitcoin com Pilhas e Filas
+
 
 **Disciplina:** Estrutura de Dados (GES-115) - UFLA  
 **Autor:** João Paulo Assis Bonifácio  
